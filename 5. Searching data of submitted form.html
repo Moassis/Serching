@@ -1,0 +1,414 @@
+ <!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            table, th, td {
+            border:1px solid black;
+            font-size: medium;
+            background-color:rgb(179, 180, 179);
+            }
+            #table, #table th, #table td {
+                border:dimgrey;
+                font-size: medium;
+                background-color:rgb(179, 180, 179);
+            }
+            .stl {
+                width:350px;
+                height:auto;
+                background-color:rgb(179, 180, 179); 
+                color:black;
+                font-size: medium;
+                border:1px solid black;
+                margin-left:30%
+            }
+            
+        </style>
+
+        <script src="0-JQuery.js"></script>
+
+        <script>
+        
+        $(document).ready(function(){
+            $("#insert").click(function(){
+                if ($("#insert").text() == "Insert Record"){
+                
+                    a1=$("#certificate").val();
+                    if(a1.length<8){
+                        alert("Please enter your certificate no. minimum of 8 character.")
+                        return;
+                    };
+
+                    a2=$("#date").val();
+                    if(a2==''){
+                        alert("Please enter date.");    
+                    return;
+                    };
+
+                    a3=$("#result").val();
+                    if(a3>100){
+                        alert("Please enter correct percentage of your result.")
+                    return;
+                    };
+
+                    a7=$("#action").html();
+                             
+                    $("#displayTable1").css("display","block");
+                
+                    $("#table1").append("<tr><td>"+a1+"</td><td>"+a2+"</td><td>"+a3+"</td><td>"+a7+"</td></tr>");
+                    // we can write the same above code for appending the row in this manner also
+                    // $("#table1").append("<tr><td>"+a1+"<td>"+a2+"<td>"+a3+"<td>"+a4+"<td>"
+                    // +a5+"<td>"+a6+"<td><button>Edit</button><button>Remove</button></tr>");
+
+                    // for clear all inputs after submitting the form    
+                    $(".stl input").each(function() {
+                        this.value = "";
+                        this.checked = false;
+                    });
+                    
+                    $("#byCertificateOption").css("display", "none");
+                    $("#byDateOption").css("display", "none");
+                    $("#byCustomDateOption").css("display", "none");
+                };           
+            });
+
+            $("body").on('click',"#delete",(function(){
+                    $(this).parents('tr').remove();
+            }));
+
+            $("body").on('click',"#edit",(function(){
+                row = $(this).parents('tr');
+                col = row.children('td');
+
+                //Storing value in variables
+                b1=$(col[0]).text();
+                b2=$(col[1]).text();
+                b3=$(col[2]).text();
+                
+                //Passing variables value at the required address
+                $("#certificate").val(b1); 
+                $("#date").val(b2);
+                $("#result").val(b3);             
+                
+                // Change Submit Button Text
+                $("#insert").text("Update");           
+            }));
+           
+            $("body").on('click',"#insert",(function(){  
+                if ($("#insert").text() == "Update"){
+                    
+                    c1=$("#certificate").val();
+                    if(c1.length<8){
+                    alert("Please enter your certificate no. minimum of 8 character.")
+                    return;
+                    };
+                    $(col[0]).text(c1);
+
+                    c2=$("#date").val();
+                    if(c2==''){
+                    alert("Please enter the date.");    
+                    return;
+                    };
+                    $(col[1]).text(c2);
+
+                    c3=$("#result").val();
+                    if(c3>100){
+                    alert("Please enter correct percentage of your result .")
+                    return;
+                    };
+                    $(col[2]).text(c3);
+                    // Change Update Button Text
+                    $("#insert").text("Insert Record");
+
+                    $(".stl input").each(function() {
+                        this.value = "";
+                        this.checked = false;
+                    });
+                    
+                    $("#byCertificateOption").css("display", "none");
+                    $("#byDateOption").css("display", "none");
+                    $("#byCustomDateOption").css("display", "none");
+                }
+            }));
+            $("body").on('click',"#byCertificate",(function(){
+                $("#byCertificateOption").css("display", "block");
+                $("#byDateOption").css("display", "none");
+                $("#byCustomDateOption").css("display", "none");
+            }));
+            $("body").on('click',"#byDate",(function(){
+                $("#byCertificateOption").css("display", "none");
+                $("#byDateOption").css("display", "block");
+                $("#byCustomDateOption").css("display", "none");
+            }));
+            $("body").on('click',"#byCustomDate",(function(){
+                $("#byCertificateOption").css("display", "none");
+                $("#byDateOption").css("display", "none");
+                $("#byCustomDateOption").css("display", "block");
+            }));
+            
+            $("body").on('click',"#search",(function(){
+                if($("#byCertificate").is(':checked')){
+                    tr=$("#table1 tr"); //This is array of all rows. It is not used here, but it is written here for remembering the code.
+                    td=$("#table1 td"); //This is array of all columns.
+                    cer=$("#certificateNo").val();
+                    d4=$("#dateNo").val();
+                    if(cer==''){
+                        alert("Please enter Certificate No.");    
+                        return;
+                    }
+                    if(d4==''){
+                        alert("Please enter date.");    
+                        return;
+                    }
+                    for(i=0; i<td.length; i++){
+                        if (td[i].innerHTML==cer){
+                            if(td[i+1].innerHTML!=d4){
+                                alert("Please enter correct date.");    
+                                return;
+                            }
+                            d1=$(td[i]).text();
+                            d2=$(td[i+1]).text();
+                            d3=$(td[i+2]).text();
+                            $("#displayTable2").css("display","block");                
+                            $("#table2").append("<tr><td>"+d1+"</td><td>"+d2+"</td><td>"+d3+"</td></tr>");
+                        }
+                    }    
+                }
+                else if($("#byDate").is(':checked')){
+                    if($("#today").is(':selected')){
+                        td=$("#table1 td");
+                        $("#displayTable2").css("display","block");
+                        
+                        //To find Today date in formate yyyy-mm-dd
+                        var d = new Date();
+                        month = "" + (d.getMonth() + 1);
+                        day = "" + d.getDate();
+                        year = d.getFullYear();
+                        if (month.length < 2)
+                            month = '0' + month;
+                        if (day.length < 2) 
+                            day = '0' + day;
+                        today=year+"-"+month+"-"+day;
+                                     
+                        for(j=1; j<td.length; j=(j+4)){
+                            var date=$(td[j]).text();
+                            if(date == today){
+                                d1=$(td[(j-1)]).text();
+                                d2=$(td[(j)]).text();
+                                d3=$(td[(j+1)]).text();
+                                $("#table2").append("<tr><td>"+d1+"</td><td>"+d2+"</td><td>"+d3+"</td></tr>"); 
+                            }
+                        } 
+                    }
+                    else if($("#last7days").is(':selected')){
+                        $("#displayTable2").css("display","block");
+                        td=$("#table1 td"); 
+                        
+                        //To find all previous date in formate yyyy-mm-dd
+                        var d = new Date();
+                        d.setDate(d.getDate() - 7);
+                        for(i=0; i<7; i++){
+                            d.setDate(d.getDate() + 1);
+                            month = "" + (d.getMonth() + 1);
+                            day = "" + d.getDate();
+                            year = d.getFullYear();
+                            if (month.length < 2)
+                                month = '0' + month;
+                            if (day.length < 2) 
+                                day = '0' + day;
+                            previousDate=year+"-"+month+"-"+day;
+                            
+                            for(j=1; j<td.length; j=(j+4)){
+                            var date=td[j].innerHTML;
+                                if(date == previousDate){
+                                    d1=$(td[(j-1)]).text();
+                                    d2=$(td[(j)]).text();
+                                    d3=$(td[(j+1)]).text();
+                                    $("#table2").append("<tr><td>"+d1+"</td><td>"+d2+"</td><td>"+d3+"</td></tr>"); 
+                                }
+                            }  
+                        }    
+                    }
+                    else if($("#last30days").is(':selected')){
+                        $("#displayTable2").css("display","block");
+                        td=$("#table1 td"); 
+                                    
+                        //To find all previous date in formate yyyy-mm-dd
+                        var d = new Date();
+                        d.setDate(d.getDate() - 30);
+                        for(i=0; i<30; i++){
+                            d.setDate(d.getDate() + 1);
+                            month = "" + (d.getMonth() + 1);
+                            day = "" + d.getDate();
+                            year = d.getFullYear();
+                            if (month.length < 2)
+                                month = '0' + month;
+                            if (day.length < 2) 
+                                day = '0' + day;
+                            previousDate=year+"-"+month+"-"+day;
+                            
+
+                            for(j=1; j<td.length; j=(j+4)){
+                            var date=td[j].innerHTML;
+                                if(date == previousDate){
+                                    d1=$(td[(j-1)]).text();
+                                    d2=$(td[(j)]).text();
+                                    d3=$(td[(j+1)]).text();
+                                    $("#table2").append("<tr><td>"+d1+"</td><td>"+d2+"</td><td>"+d3+"</td></tr>"); 
+                                }
+                            }  
+                        }    
+                    }
+                }
+                else if($("#byCustomDate").is(':checked')){
+                    td=$("#table1 td");
+                    $("#displayTable2").css("display","block");
+                    
+                    from=$("#from").val();
+                    const fromArray=from.split("-");
+                    var fromDate=new Date(parseInt(fromArray[0]), (parseInt(fromArray[1])-1), parseInt(fromArray[2]));
+                    
+                    to=$("#to").val();
+                    const toArray=to.split("-");
+                    var toDate=new Date(parseInt(toArray[0]), (parseInt(toArray[1])-1), parseInt(toArray[2]));
+                    
+                    var diffDays = parseInt((toDate - fromDate) / (1000 * 60 * 60 * 24), 10);
+                     
+                    var d=fromDate;
+                    d.setDate(d.getDate() - 1);
+                    for(i=0; i<=diffDays; i++){
+                        d.setDate(d.getDate() + 1);
+                        month = "" + (d.getMonth() + 1);
+                        day = "" + d.getDate();
+                        year = d.getFullYear();
+                        if (month.length < 2)
+                            month = '0' + month;
+                        if (day.length < 2) 
+                            day = '0' + day;
+                        previousDate=year+"-"+month+"-"+day;    
+                        for(j=1; j<td.length; j=(j+4)){
+                            var date=td[j].innerHTML;
+                            if(date == previousDate){
+                                d1=$(td[(j-1)]).text();
+                                d2=$(td[(j)]).text();
+                                d3=$(td[(j+1)]).text();
+                                $("#table2").append("<tr><td>"+d1+"</td><td>"+d2+"</td><td>"+d3+"</td></tr>"); 
+                            }
+                        }  
+                    }   
+                }
+                $("#search").attr("disabled", true);
+                
+                // For starting Count Down and clearing the search record 
+                var timeleft = 40;
+                var countDown = setInterval(timer,1000);
+                function timer(){
+                    if(timeleft<0){
+                        clearInterval(countDown);
+                        tr1=$("#table2 tr");
+                        for(i=1; i<tr1.length; i++){
+                            $("#table2 tr:eq(1)").remove();
+                            // We can write the above code in following way.
+                            //document.getElementById("table2").deleteRow(1);
+                        }
+                        $("#displayTable2").css("display","none");    
+                        $("#search").attr("disabled", false);
+                    } 
+                    else {
+                        $("#timer").text(timeleft+" "+"Second");
+                    }
+                        timeleft -= 1;
+                }
+            }));
+        });
+        </script>
+
+    </head>
+<body style="background-color:rgb(7, 7, 7);">
+
+<div class="stl">
+    <table id="table">
+        <tr>
+            <td>Certificate No.:</td>
+            <td><input type="text" id="certificate" name="certificate" value=""></td>
+        </tr>
+        <tr>    
+            <td>Date:</td>
+            <td><input type="date" id="date" name="date" value=""></td>
+        </tr>
+        <tr>
+            <td>Result (In Percentage):</td>
+            <td><input type="number" id="result" name="result" value=""></td>
+        </tr>
+    </table><br>
+    <table id="table" style="margin-left: 35%;">
+        <tr >
+            <td><button id="insert">Insert Record</button></td>
+        </tr>
+    </table>    
+</div><br>
+
+
+<div class="stl" style="height: auto; text-align: center;"><h3>Search Your Result:</h3>
+    
+    <input type="radio" id="byCertificate" name="search" value="byCetificate">
+    <label for="byCertificate"><b>By Certificate</b></label><br>
+        <div id="byCertificateOption" Style="display: none;">
+            <label for="certificate">Certificate No.</label>
+            <input type="text" id="certificateNo" name="certificate" value=""><br>
+            <label for="dateNo">Date</label>
+            <input type="date" id="dateNo" name="date" value="">
+        </div><br><br>
+    
+
+    <input type="radio" id="byDate" name="search" value="byDate">
+    <label for="byDate"><b>By Date:<b></label>
+        <div id="byDateOption" style="display: none;">
+            <select name="period" id="period">
+                <option id="today" value="Today">Today</option>
+                <option id="last7days" value="Last 7 Days">Last 7 Days</option>
+                <option id="last30days" value="Last 30 Days">Last 30 Days</option>
+            </select>
+        </div><br><br><br>
+    
+
+    <input type="radio" id="byCustomDate" name="search" value="byCustomDate">
+    <label for="byCustomDate">By Custom Date</label><br>
+        <div id="byCustomDateOption" style = "display:none">
+            <label for="from"><b>From:</b></label>
+            <input type="date" id="from" name="from"><br>
+            <label for="to"><b>To:</b></label>
+            <input type="date" id="to" name="to">
+        </div><br><br>
+        
+    <button id="search">Search</button>
+</div><br><br>
+
+
+<div id="displayTable1" style="display:none"> 
+    <table id="table1" style="width:100%">
+        <tr>
+            <th>Certificate</th>
+            <th>Date</th>
+            <th>Result</th>
+            <th>Action</th>
+        </tr>
+    </table>
+</div>
+
+<div id="action" style="display:none">
+    <button id="edit">Edit</button>
+    <button id="delete">Delete</button>
+</div><br><br>
+
+<div id="displayTable2" style="display:none; background-color:rgb(179, 180, 179);"><h3 style="color:rgb(4, 0, 255); margin-left: 20%;">WARNING! You have 40 second to save your searching result........<span id="timer"></span></h3><h2>Our Search Result:</h2> 
+    <table id="table2" style="width:100%">
+        <tr>
+            <th>Certificate</th>
+            <th>Date</th>
+            <th>Result</th>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
